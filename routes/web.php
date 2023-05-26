@@ -1,6 +1,9 @@
 <?php
 
+namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [TeacherController::class, 'index']);
+
+// 會員
+Route::get('/register', function () { return view('register'); });
+Route::get('/login', function () { return view('login'); })->name('login');
+Route::get('/logout',  [UserController::class, 'logout']);
+Route::post('/register', [UserController::class, 'create']);
+Route::post('/login', [UserController::class, 'login']);
