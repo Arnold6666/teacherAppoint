@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('image', 255)->nullable();
             $table->text('intro')->nullable();
+            $table->string('country');
             $table->string('email');
             $table->integer('monday')->length(1)->default(0);
             $table->integer('tuesday')->length(1)->default(0);

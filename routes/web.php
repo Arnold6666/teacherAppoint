@@ -26,4 +26,6 @@ Route::post('/register', [UserController::class, 'create']);
 Route::post('/login', [UserController::class, 'login']);
 
 // 老師
-Route::get('/teacher/{id}', [TeacherController::class, 'show']);
+Route::get('/teacher/{id}', [TeacherController::class, 'show'])->middleware('auth');
+
+Route::post('/curriculum/create', [CurriculumController::class, 'store'])->middleware('auth');

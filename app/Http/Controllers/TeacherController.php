@@ -40,7 +40,7 @@ class TeacherController extends Controller
     public function show($id)
     {
         //
-        $teacher = Teacher::find($id);
+        $teacher = Teacher::with('curriculums')->find($id);
 
         return view('teacher', compact('teacher'));
     }

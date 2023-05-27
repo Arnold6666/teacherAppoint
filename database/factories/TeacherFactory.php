@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Teacher;
-use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
 
@@ -39,6 +38,7 @@ class TeacherFactory extends Factory
             'name'  => fake()->name(),
             'image' => $imageStoragePath,
             'intro' => fake()->words(20, true),
+            'country'=> $this->faker->randomElement(["US", "UK", "TW", "HK", "IN"]),
             'email' => fake()->unique()->safeEmail(),
             'monday' => $this->faker->randomElement([0, 1]),
             'tuesday' => $this->faker->randomElement([0, 1]),

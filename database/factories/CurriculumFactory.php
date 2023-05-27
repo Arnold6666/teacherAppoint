@@ -25,32 +25,21 @@ class CurriculumFactory extends Factory
     {
         $user = User::inRandomOrder()->first();
         $teacher = Teacher::inRandomOrder()->first();
-
+    
         $now = Carbon::now();
         $time = $now->setTime(8, 0, 0);
         $randomHour = rand(8, 20);
         $time->setTime($randomHour, 0, 0);
-
-        $state = $this->faker->randomElement([1, 2, 3, 4]);
-        if ($state === 3) {
-            $comment = $this->faker->words(10, true);
+    
+        $date = Carbon::now()->addDays(rand(-20, 20));
+        if ($date->isPast()) {
+            $state = $this->faker->randomElement([2, 3, 4]);
+            $comment = ($state === 3) ? $this->faker->words(10, true) : null;
         } else {
+            $state = 1;
             $comment = null;
         }
-
-        $counter = 0;
-        $maxAttempts = 100;
-        $availableDays = collect(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
-            ->filter(function ($day) use ($teacher) {
-                return $teacher->{$day} === 1;
-            })
-            ->toArray();
-
-        $date = Carbon::now()->addDays(rand(0, 20));
-        while (!in_array(strtolower($date->englishDayOfWeek), $availableDays)) {
-            $date->addDay();
-        }
-
+    
         return [
             'teacher'       => $teacher->id,
             'student'       => $user->id,

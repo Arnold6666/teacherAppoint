@@ -88,12 +88,13 @@ $user = Auth::user();
                     <div class="card mb-3 ">
                         <div class="row g-0">
                             <div class="col-md-3">
-                                <img src={{ asset(str_replace('/app/public', '', substr($teacher->image, 1))) }}
+                                <img src={{ asset('storage' . str_replace('public', '', $teacher->image)) }}
                                     class="img-fluid rounded-start w-100" alt="...">
                             </div>
                             <div class="col-md-9">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $teacher->name }}</h5>
+                                    <p class="card-text">國籍：{{ $teacher->country }}</p>
                                     <p class="card-text d-flex align-items-center">
                                         {{ $teacher->stars }} 
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"

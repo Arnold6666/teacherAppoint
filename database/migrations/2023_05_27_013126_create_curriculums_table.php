@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('student')->constrained('users');
             $table->date('date');
             $table->time('time');
-            $table->foreignId('state')->constrained('states');
+            $table->foreignId('state')->constrained('states')->default(1);
             $table->integer('price')->length(5);
             $table->text('comment')->nullable();
             $table->timestamps();
