@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Curriculum;
 
 class Teacher extends Model
 {
@@ -24,4 +25,8 @@ class Teacher extends Model
         'stars',
         'comments',
     ];
+
+    public function curriculums(){
+        return $this->hasMany(Curriculum::class);
+    }
 }

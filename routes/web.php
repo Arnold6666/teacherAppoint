@@ -24,3 +24,6 @@ Route::get('/login', function () { return view('login'); })->name('login');
 Route::get('/logout',  [UserController::class, 'logout']);
 Route::post('/register', [UserController::class, 'create']);
 Route::post('/login', [UserController::class, 'login']);
+
+// 老師
+Route::get('/teacher/{id}', [TeacherController::class, 'show']);

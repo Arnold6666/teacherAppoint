@@ -37,9 +37,12 @@ class TeacherController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Teacher $teacher)
+    public function show($id)
     {
         //
+        $teacher = Teacher::find($id);
+
+        return view('teacher', compact('teacher'));
     }
 
     /**

@@ -44,9 +44,9 @@ $user = Auth::user();
                                 <a class="btn btn-outline-secondary mb-0 text-white ms-2" href="{{ route('myArticle')}}">{{ auth()->user()->name }} 的文章 </a>
                             </li> --}}
                         @else
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/register">註冊帳號</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">登入</a>
+                        </li>
                         @endif
                     </ul>
                 </div>

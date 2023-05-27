@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Teacher;
+use App\Models\Curriculum;
 
-class TeacherSeeder extends Seeder
+class CurriculumSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,8 @@ class TeacherSeeder extends Seeder
     public function run(): void
     {
         //
+        Curriculum::truncate();
 
-        Teacher::factory()->count(10)->create();
+        Curriculum::factory()->count(100)->create();
     }
 }
