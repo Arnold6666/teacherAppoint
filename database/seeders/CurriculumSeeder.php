@@ -14,7 +14,7 @@ class CurriculumSeeder extends Seeder
     public function run(): void
     {
         //
-        Curriculum::truncate();
+        // Curriculum::truncate();
 
         Curriculum::factory()->count(100)->create();
     }

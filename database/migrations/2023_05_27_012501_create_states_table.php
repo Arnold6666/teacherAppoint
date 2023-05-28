@@ -18,10 +18,14 @@ return new class extends Migration
         });
         
         DB::table('states')->insert([
-            ['state' => '未上課'],
+            ['state' => '已預約未付款'],
+            ['state' => '已付款未上課'],
             ['state' => '已上課未評論'],
             ['state' => '已上課已評論'],
             ['state' => '逾期未上'],
+            ['state' => '取消課程'],
+            ['state' => '退款中'],
+            ['state' => '退款完成'],
         ]);
     }
 

@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('app:update-teacher-ratings')->everyTenMinutes()->withoutOverlapping();
     }
 
     /**
@@ -21,6 +22,10 @@ class Kernel extends ConsoleKernel
     protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');
+
+        $this->commands([
+            Commands\UpdateTeacherRatings::class,
+        ]);
 
         require base_path('routes/console.php');
     }

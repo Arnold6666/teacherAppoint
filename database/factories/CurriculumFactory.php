@@ -33,21 +33,24 @@ class CurriculumFactory extends Factory
     
         $date = Carbon::now()->addDays(rand(-20, 20));
         if ($date->isPast()) {
-            $state = $this->faker->randomElement([2, 3, 4]);
-            $comment = ($state === 3) ? $this->faker->words(10, true) : null;
+            $state = $this->faker->randomElement([3, 4, 5, 6, 7, 8]);
+            $comment = ($state === 4) ? $this->faker->words(10, true) : null;
+            $stars = ($state === 4) ? $this->faker->randomElement([1, 2, 3, 4, 5]) : null;
         } else {
-            $state = 1;
+            $state = $this->faker->randomElement([1, 2, 6, 7, 8]);
             $comment = null;
+            $stars = null;
         }
     
         return [
-            'teacher'       => $teacher->id,
-            'student'       => $user->id,
+            'teacher_id'    => $teacher->id,
+            'student_id'    => $user->id,
             'date'          => $date->format('Y-m-d'),
             'time'          => $time->format('H:i:s'),
-            'state'         => $state,
+            'state_id'      => $state,
             'price'         => $teacher->price,
             'comment'       => $comment,
+            'stars'         => $stars,
             'created_at'    => Carbon::now()->subDays(rand(1, 30)),
             'updated_at'    => Carbon::now(),
         ];
