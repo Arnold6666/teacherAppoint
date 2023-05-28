@@ -32,7 +32,8 @@ $user = Auth::user();
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         @if ($user)
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center btn btn-outline-secondary" aria-current="page" href="/create">我的課表<svg
+                                <a class="nav-link d-flex align-items-center btn btn-outline-secondary"
+                                    aria-current="page" href="/curriculum/show">我的課表<svg
                                         xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="ms-1"
                                         fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 16 16">
                                         <path
@@ -44,10 +45,6 @@ $user = Auth::user();
                             <li class="nav-item">
                                 <a class="nav-link" aria-current="page" href="/logout">登出</a>
                             </li>
-                            {{-- <li class="nav-item">
-                                <a class="btn btn-outline-secondary mb-0 text-white ms-2"
-                                    href="{{ route('myArticle') }}">{{ auth()->user()->name }} 的文章</a>
-                            </li> --}}
                         @else
                             <li class="nav-item">
                                 <a class="nav-link" href="/login">登入</a>

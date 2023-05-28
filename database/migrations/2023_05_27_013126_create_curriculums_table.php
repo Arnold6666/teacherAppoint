@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('curriculums', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('teacher')->constrained('teachers');
-            $table->foreignId('student')->constrained('users');
+            $table->foreignId('teacher_id')->constrained('teachers');
+            $table->foreignId('student_id')->constrained('users');
             $table->date('date');
             $table->time('time');
-            $table->foreignId('state')->constrained('states')->default(1);
+            $table->foreignId('state_id')->constrained('states')->default(1);
             $table->integer('price')->length(5);
             $table->text('comment')->nullable();
+            $table->integer('stars')->nullable();
             $table->timestamps();
         });
     }

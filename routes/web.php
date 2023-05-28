@@ -28,4 +28,9 @@ Route::post('/login', [UserController::class, 'login']);
 // 老師
 Route::get('/teacher/{id}', [TeacherController::class, 'show'])->middleware('auth');
 
+// 課程
 Route::post('/curriculum/create', [CurriculumController::class, 'store'])->middleware('auth');
+Route::post('/curriculum/refund', [CurriculumController::class, 'refund'])->name('curriculum.refund')->middleware('auth');
+Route::get('/curriculum/show', [CurriculumController::class, 'show'])->middleware('auth');
+Route::delete('/curriculum/{id}', [CurriculumController::class, 'destroy'])->name('curriculum.destroy');
+Route::patch('/curriculum/{id}', [CurriculumController::class, 'update'])->name('curriculum.update');
