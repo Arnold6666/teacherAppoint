@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
+use Laravel\Passport\TokenRepository;
+use Laravel\Passport\RefreshTokenRepository;
 
 class UserController extends Controller
 {
@@ -35,19 +36,30 @@ class UserController extends Controller
 
             //失敗後回傳並終止
             if ($validateUser->fails()) {
-                session()->flash('status', false);
-                session()->flash('message', '所有欄位必填');
-                session()->flash('errors', $validateUser->errors());
 
-                return redirect()->back()->withInput();
+                $errors = $validateUser->errors()->all();
+                $message = "";
+
+                for ($i = 0; $i < count($errors); $i++) {
+                    if ($i === count($errors) - 1) {
+                        $message = $message . $errors[$i];
+                        continue;
+                    }
+                    $message = $message . $errors[$i] . '，';
+                }
+
+                return response()->json([
+                    'status'    => false,
+                    'message'   => $message
+                ], 422);
             }
 
             if ($request->password !== $request->password2) {
-                session()->flash('status', false);
-                session()->flash('message', '密碼不相等');
-                session()->flash('errors', $validateUser->errors());
 
-                return redirect()->back()->withInput();
+                return response()->json([
+                    'status'    => false,
+                    'message'   => "密碼輸入不相等"
+                ], 422);
             }
 
             $user = User::create([
@@ -57,25 +69,24 @@ class UserController extends Controller
             ]);
 
             if ($user) {
-                session()->flash('status', true);
-                session()->flash('message', '註冊成功');
-
-                return redirect()->back();
+                return response()->json([
+                    'status'    => true,
+                    'message'   => "註冊成功"
+                ], 200);
             } else {
-                session()->flash('status', false);
-                session()->flash('message', '註冊失敗');
-
-                return redirect()->back();
+                return response()->json([
+                    'status'    => false,
+                    'message'   => "註冊失敗"
+                ], 400);
             }
         } catch (\Throwable $th) {
             //throw $th;
 
-            session()->flash('message', $th->getMessage());
-
-            return redirect()->back();
+            return response()->json([
+                'status'    => false,
+                'message'   => "註冊失敗"
+            ], 500);
         }
-
-        // return "OK";
     }
 
     /**
@@ -129,42 +140,73 @@ class UserController extends Controller
 
             //失敗後回傳並終止
             if ($validateUser->fails()) {
-                session()->flash('status', false);
-                session()->flash('message', '沒有填寫帳號或密碼');
 
-                return redirect()->back()->withInput();
+                $errors = $validateUser->errors()->all();
+                $message = "";
+
+                for ($i = 0; $i < count($errors); $i++) {
+                    if ($i === count($errors) - 1) {
+                        $message = $message . $errors[$i];
+                        continue;
+                    }
+                    $message = $message . $errors[$i] . '，';
+                }
+
+                return response()->json([
+                    'status'    => false,
+                    'message'   => $message
+                ], 422);
             }
 
             if (Auth::attempt($request->only(['email', 'password']))) {
-                session()->flash('status', true);
-                session()->flash('message', '登入成功');
-                $userId = Auth::user()->id;
-                $userName = Auth::user()->name;
+                $user = Auth::user();
 
-                Session::put('userId', $userId);
-                Session::put('userName', $userName);
+                $scopes = ['read:users', 'write:users'];
+                $token =  $user->createToken('MyApp')->accessToken;
+                $name =  $user->name;
 
-                return redirect()->back();
+                return response()->json([
+                    'status'    => true,
+                    'message'   => $name . "登入成功",
+                    'token'     => $token
+                ], 200);
             } else {
 
-                session()->flash('status', true);
-                session()->flash('message', '帳號或密碼錯誤');
-                return redirect()->back()->withInput();
+                return response()->json([
+                    'status'    => false,
+                    'message'   => "登入失敗"
+                ], 400);
             }
         } catch (\Throwable $th) {
             //throw $th;
 
-            session()->flash('message', $th->getMessage());
-
-            return redirect()->back();
+            return response()->json([
+                'status'    => false,
+                'message'   => "登入失敗"
+            ], 500);
         }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        session()->flush();
 
-        // 重定向到登出後的頁面或首頁
-        return redirect('/');
+        try {
+
+            $bearerToken = $request->bearerToken();
+            $tokenRepository = app(TokenRepository::class);
+            $tokenRepository->revokeAccessToken($bearerToken);
+
+            return response()->json([
+                'status' => true,
+                'message' => "登出成功",
+            ], 200);
+            
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'status' => true,
+                'message' => "錯誤",
+            ], 500);
+        }
     }
 }
