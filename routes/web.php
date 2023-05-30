@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', [TeacherController::class, 'index']);
 
 // // 會員
 // Route::get('/register', function () { return view('register'); });
@@ -26,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 // Route::post('/login', [UserController::class, 'login']);
 
 // // 老師
+// Route::get('/', [TeacherController::class, 'index']);
 // Route::get('/teacher/{id}', [TeacherController::class, 'show'])->middleware('auth');
 
 // // 課程

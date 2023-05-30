@@ -31,6 +31,6 @@ class Teacher extends Model
     ];
 
     public function curriculums(){
-        return $this->hasMany(Curriculum::class, 'teacher');
+        return $this->hasMany(Curriculum::class, 'teacher_id');
     }
 }

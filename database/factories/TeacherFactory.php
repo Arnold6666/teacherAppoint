@@ -22,13 +22,6 @@ class TeacherFactory extends Factory
 
     public function definition(): array
     {
-        // $imagePath = $this->faker->image(storage_path('app/public/teachers'), 300, 300, null, false);
-        // // die($imagePath);
-        // $imageFile = new File(storage_path('app/public/teachers/' . $imagePath));
-
-        // $imageFilename = $imageFile->getFilename();
-        // $imageStoragePath = '/storage/app/public/teachers/' . $imageFilename;
-        // Storage::disk('public')->put($imageStoragePath, file_get_contents(storage_path('app/public/teachers/' . $imagePath)));
         $imagePath = $this->faker->image(storage_path('app/public/teachers'), 300, 300, null, false);
         $imageFilename = basename($imagePath);
         $imageStoragePath = 'public/teachers/' . $imageFilename;

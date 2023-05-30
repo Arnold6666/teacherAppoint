@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\VerifyDomainMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,10 +17,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
+// 會員
 Route::post('/register', [UserController::class, 'create']);
 Route::post('/login', [UserController::class, 'login']);
-Route::post('/logout', [UserController::class, 'logout']);
+Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:api');
+
+// 課程
+Route::post('/curriculum/store', [CurriculumController::class, 'store'])->middleware('auth:api');
+Route::get('/curriculum/show', [CurriculumController::class, 'show'])->middleware('auth:api');
+Route::patch('/curriculum/{id}', [CurriculumController::class, 'update'])->middleware('auth:api');
+Route::delete('/curriculum/{id}', [CurriculumController::class, 'destroy'])->middleware('auth:api');
+Route::post('/curriculum/refund/{id}', [CurriculumController::class, 'refund'])->middleware('auth:api');
+
+// 老師
+Route::get('/teacher/all', [TeacherController::class, 'index']);
+Route::get('/teacher/{id}', [TeacherController::class, 'show'])->middleware('auth:api');
+// Route::post('/teacher', [TeacherController::class, 'store'])->middleware(VerifyDomainMiddleware::class);
+Route::post('/teacher', [TeacherController::class, 'store']);
+Route::patch('/teacher/{id}', [TeacherController::class, 'update']);
+Route::delete('/teacher/{id}', [TeacherController::class, 'destroy']);

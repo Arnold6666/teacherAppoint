@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
+use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -187,24 +188,58 @@ class UserController extends Controller
         }
     }
 
+    // public function logout(Request $request)
+    // {
+
+    //     try {
+
+    //         $bearerToken = $request->bearerToken();
+    //         $tokenRepository = app(TokenRepository::class);
+    //         $refreshTokenRepository = app(RefreshTokenRepository::class);
+
+    //         // $revoked = $tokenRepository->revokeAccessToken($bearerToken);
+    //         $revoked = $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($bearerToken);
+    //         if (!$revoked) {
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'message' => '無法撤銷令牌',
+    //                 'toekn' => $bearerToken
+    //             ], 500);
+    //         }
+
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => "登出成功",
+    //         ], 200);
+
+    //     } catch (\Throwable $th) {
+
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => "錯誤",
+    //             'error'     => $th->getMessage(),
+    //             'trace'     => $th->getTraceAsString()
+    //         ], 500);
+    //     }
+    // }
+
     public function logout(Request $request)
     {
 
-        try {
+        $accessToken = $request->user()->token();
+        $revoke = $accessToken->revoke();
 
-            $bearerToken = $request->bearerToken();
-            $tokenRepository = app(TokenRepository::class);
-            $tokenRepository->revokeAccessToken($bearerToken);
+        if ($revoke) {
 
             return response()->json([
                 'status' => true,
                 'message' => "登出成功",
             ], 200);
-            
-        } catch (\Throwable $th) {
+
+        }else{
 
             return response()->json([
-                'status' => true,
+                'status' => false,
                 'message' => "錯誤",
             ], 500);
         }
