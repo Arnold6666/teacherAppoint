@@ -25,6 +25,9 @@ Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:api'
 // 課程
 Route::post('/curriculum/store', [CurriculumController::class, 'store'])->middleware('auth:api');
 Route::get('/curriculum/show', [CurriculumController::class, 'show'])->middleware('auth:api');
+Route::get('/curriculum/unpay', [CurriculumController::class, 'unpay']);
+Route::post('/curriculum/pay', [CurriculumController::class, 'pay']);
+Route::post('/curriculum/callback', [CurriculumController::class, 'callback']);
 Route::patch('/curriculum/{id}', [CurriculumController::class, 'update'])->middleware('auth:api');
 Route::delete('/curriculum/{id}', [CurriculumController::class, 'destroy'])->middleware('auth:api');
 Route::post('/curriculum/refund/{id}', [CurriculumController::class, 'refund'])->middleware('auth:api');

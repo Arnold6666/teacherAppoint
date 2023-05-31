@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use App\Http\Controllers\Controller;
 
 use App\Models\Curriculum;
@@ -9,6 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Ecpay\Sdk\Factories\Factory;
+use Ecpay\Sdk\Services\UrlService;
+
+
+require 'C:\Users\Arnoid\Desktop\teacherappoint\vendor\autoload.php';
 
 class CurriculumController extends Controller
 {
@@ -234,7 +240,7 @@ class CurriculumController extends Controller
     {
         $curriculum = Curriculum::findOrFail($id);
 
-        if($curriculum->state !== 2){
+        if ($curriculum->state !== 2) {
             return response()->json([
                 'status'    => false,
                 'message'   => "已付款未上課的課程，才能退款喔",
@@ -250,7 +256,6 @@ class CurriculumController extends Controller
                 'status'    => true,
                 'message'   => '已進入退款處理程序，退款成功，將會通知您喔',
             ], 404);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status'    => false,
@@ -259,6 +264,65 @@ class CurriculumController extends Controller
                 // 'trace'     => $th->getTraceAsString()
             ], 404);
         }
+    }
 
+    public function unPay()
+    {
+
+        $curriculums = Curriculum::with('teacher')->with('state')
+            ->where('student_id', 1)->where('state_id', 1)
+            ->orderBy('date')
+            ->get();
+
+        return view('unpay', compact('curriculums'));
+    }
+
+
+    public function Pay(Request $request)
+    {
+
+        try {
+            $curriculum = Curriculum::findOrFail(substr($request->id, 0, -6));
+            $tradeId = $curriculum->id;
+            $amount = $curriculum->price;
+
+            $factory = new Factory([
+                'hashKey' => '5294y06JbISpM5x9',
+                'hashIv' => 'v77hoKGq4kWxNNIS',
+            ]);
+            $autoSubmitFormService = $factory->create('AutoSubmitFormWithCmvService');
+
+            $input = [
+                'MerchantID' => '2000132',
+                'MerchantTradeNo' => $tradeId . "000000",
+                'MerchantTradeDate' => date('Y/m/d H:i:s'),
+                'PaymentType' => 'aio',
+                'TotalAmount' => $amount,
+                'TradeDesc' => UrlService::ecpayUrlEncode('交易描述範例'),
+                'ItemName' => '範例商品一批 100 TWD x 1',
+                'ChoosePayment' => 'Credit',
+                'EncryptType' => 1,
+
+                // 請參考 example/Payment/GetCheckoutResponse.php 範例開發
+                'ReturnURL' => 'https://42a4-106-105-92-36.jp.ngrok.io/api/curriculum/callback',
+            ];
+            $action = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
+
+            echo $autoSubmitFormService->generate($input, $action);
+
+            return view('unpay', compact('curriculums'));
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function callback(Request $request)
+    {
+
+        $curriculum = Curriculum::findorfail(substr($request->MerchantTradeNo, 0, -6));
+        $curriculum->state_id = 2;
+        $curriculum->save;
+
+        return view('unpay');
     }
 }
