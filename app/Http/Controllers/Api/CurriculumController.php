@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Ecpay\Sdk\Factories\Factory;
 use Ecpay\Sdk\Services\UrlService;
+use Illuminate\Support\Str;
 
 
 require 'C:\Users\Arnoid\Desktop\teacherappoint\vendor\autoload.php';
@@ -65,6 +66,7 @@ class CurriculumController extends Controller
             ], 404);
         }
 
+        
         $user = Auth::guard('api')->user();
         $student = $user->id;
 
@@ -75,9 +77,12 @@ class CurriculumController extends Controller
         try {
 
             foreach ($request->datetime as $datetime) {
+
+                $uuid_temp = str_replace("-", "",substr(Str::uuid()->toString(), 0,18));
+
                 $curriculum     = new Curriculum;
                 $date = Carbon::parse($datetime);
-
+                $curriculum->uuid           = $uuid_temp;
                 $curriculum->teacher_id     = $request->teacher;
                 $curriculum->student_id     = $student;
                 $curriculum->date           = $date->format('Y-m-d');
@@ -282,8 +287,8 @@ class CurriculumController extends Controller
     {
 
         try {
-            $curriculum = Curriculum::findOrFail(substr($request->id, 0, -6));
-            $tradeId = $curriculum->id;
+            $curriculum = Curriculum::where('uuid',$request->uuid)->first();
+            $tradeId = $curriculum->uuid;
             $amount = $curriculum->price;
 
             $factory = new Factory([
@@ -291,28 +296,30 @@ class CurriculumController extends Controller
                 'hashIv' => 'v77hoKGq4kWxNNIS',
             ]);
             $autoSubmitFormService = $factory->create('AutoSubmitFormWithCmvService');
+            // $randomNumber = str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT);
 
             $input = [
                 'MerchantID' => '2000132',
-                'MerchantTradeNo' => $tradeId . "000000",
+                'MerchantTradeNo' => $tradeId ,
                 'MerchantTradeDate' => date('Y/m/d H:i:s'),
                 'PaymentType' => 'aio',
                 'TotalAmount' => $amount,
                 'TradeDesc' => UrlService::ecpayUrlEncode('交易描述範例'),
-                'ItemName' => '範例商品一批 100 TWD x 1',
+                'ItemName' => $amount . ' TWD x 1',
                 'ChoosePayment' => 'Credit',
                 'EncryptType' => 1,
 
                 // 請參考 example/Payment/GetCheckoutResponse.php 範例開發
-                'ReturnURL' => 'https://42a4-106-105-92-36.jp.ngrok.io/api/curriculum/callback',
+                'ReturnURL' => 'https://e51e-106-105-92-36.jp.ngrok.io/api/curriculum/callback',
             ];
+
             $action = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
 
             echo $autoSubmitFormService->generate($input, $action);
 
             return view('unpay', compact('curriculums'));
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 

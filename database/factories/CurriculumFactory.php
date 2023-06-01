@@ -7,6 +7,7 @@ use App\Models\Curriculum;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Curriculum>
@@ -41,8 +42,11 @@ class CurriculumFactory extends Factory
             $comment = null;
             $stars = null;
         }
+
+        $uuid_temp = str_replace("-", "",substr(Str::uuid()->toString(), 0,18));
     
         return [
+            'uuid'          => $uuid_temp,
             'teacher_id'    => $teacher->id,
             'student_id'    => $user->id,
             'date'          => $date->format('Y-m-d'),

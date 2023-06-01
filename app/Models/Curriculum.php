@@ -15,6 +15,7 @@ class Curriculum extends Model
     protected $keytype = 'int';
 
     protected $fillable = [
+        'uuid',
         'teacher_id',
         'student_id',
         'date',

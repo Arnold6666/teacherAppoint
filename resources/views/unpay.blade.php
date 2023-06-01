@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
 
     {{-- bootstrap 5  --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
-    <title>Blog</title>
+    <title>Appoint</title>
 
 </head>
 
@@ -57,7 +57,7 @@ use Illuminate\Support\Carbon;
                                     @foreach ($curriculums as $curriculum)
                                         @if ($curriculum->state->id === 1)
                                             <tr>
-                                                <th scope="row">{{ $curriculum->id }}</th>
+                                                <th scope="row">{{ $curriculum->uuid }}</th>
                                                 <td>{{ $curriculum->date }}</td>
                                                 <td>{{ $curriculum->time }}</td>
                                                 <td>{{ $curriculum->teacher->name }}</td>
@@ -78,7 +78,7 @@ use Illuminate\Support\Carbon;
                                                         method="POST" onsubmit="return confirm('確認前往付款？')">
                                                         @csrf
                                                         @method('POST')
-                                                        <input type="hidden" value="{{ $curriculum->id . "000000"}}" name="id">
+                                                        <input type="hidden" value="{{ $curriculum->uuid }}" name="uuid">
                                                         <button class="btn btn-outline-success"
                                                             type="submit">付款</button>
                                                     </form>

@@ -39,3 +39,6 @@ Route::get('/teacher/{id}', [TeacherController::class, 'show'])->middleware('aut
 Route::post('/teacher', [TeacherController::class, 'store']);
 Route::patch('/teacher/{id}', [TeacherController::class, 'update']);
 Route::delete('/teacher/{id}', [TeacherController::class, 'destroy']);
+
+// line
+Route::post('/line',[LineController::class, 'index']);
